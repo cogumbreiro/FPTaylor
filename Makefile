@@ -5,6 +5,8 @@ INTERVAL_DIR = INTERVAL
 SIMPLE_INTERVAL_DIR = simple_interval
 OPT_DIR = b_and_b
 
+PACKAGES = -package num
+
 BASE_SRC = version.mli\
 	version.ml\
 	lib.mli\
@@ -106,8 +108,9 @@ test:
 fptaylor-interval: INCLUDE=$(INTERVAL_DIR)
 
 fptaylor-interval: compile-interval compile-byte
-	$(ML) -o fptaylor -I $(OPT_DIR) -I $(INTERVAL_DIR) \
+	ocamlfind $(ML) -o fptaylor -I $(OPT_DIR) -I $(INTERVAL_DIR) \
 		unix.cma str.cma nums.cma \
+		$(PACKAGES) \
 		$(INTERVAL_DIR)/chcw.o $(INTERVAL_DIR)/interval.cma \
 		$(SRC:.ml=.cmo)
 	cp $(OPT_DIR)/compile.template $(OPT_DIR)/compile.sh
@@ -180,13 +183,13 @@ main_js.cmo: main_js.ml
 		main_js.ml
 
 %.cmi : %.mli
-	$(ML) -c -I $(OPT_DIR) -I $(INCLUDE) $^
+	ocamlfind $(ML) -c -I $(OPT_DIR) -I $(INCLUDE) $(PACKAGES) $^
 
 %.cmo : %.ml
-	$(ML) -c -I $(OPT_DIR) -I $(INCLUDE) $^
+	ocamlfind $(ML) -c -I $(OPT_DIR) -I $(INCLUDE) $(PACKAGES) $^
 
 %.cmx : %.ml
-	$(OPT_ML) -c -I $(OPT_DIR) -I $(INCLUDE) $^
+	ocamlfind $(OPT_ML) -c -I $(OPT_DIR) -I $(INCLUDE) $(PACKAGES) $^
 
 clean-interval:
 	cd $(INTERVAL_DIR); $(MAKE) clean
